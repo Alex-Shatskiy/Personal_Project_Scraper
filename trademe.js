@@ -14,22 +14,22 @@ async function scraper(){
         })
 
         const homes = await page.evaluate( 
-            () => Array.from( 
-                document.querySelectorAll( 'tm-property-search-card-listing-title' ), 
-                element => element.textContent
-              )
-            );
-        
+          () => Array.from( 
+              document.querySelectorAll('tm-property-search-card-listing-title'), 
+              element => element.textContent
+            )
+          );
+
         const avalibleDates = await page.evaluate( 
             () => Array.from( 
-                document.querySelectorAll( 'tm-property-search-card-address-subtitle'), 
+                document.querySelectorAll('tm-property-search-card-address-subtitle'), 
                 element => element.textContent.match(/([^-]*)Dec/g)
               )
             );
 
         const price = await page.evaluate( 
             () => Array.from( 
-                document.querySelectorAll( '.tm-property-search-card-price-attribute__price' ), 
+                document.querySelectorAll('.tm-property-search-card-price-attribute__price' ), 
                 element => element.textContent.replace(/[^0-9\.]/g,'')
               )
             );
@@ -37,7 +37,7 @@ async function scraper(){
         const links = await page.evaluate(
             () => Array.from(
               document.querySelectorAll('.tm-property-search-card__link'),
-              a => a.getAttribute('href')
+              element => element.getAttribute('href')
             )
           );
 
@@ -48,19 +48,19 @@ async function scraper(){
                 allHomes.push({id: i, homes: homes[i], dates: avalibleDates[i][0], price: price[i], links: 'trademe.co.nz/a/'+links[i]})
          }
         }
-        // 
-        // await page.goto('', {
-        //     waitUntil: 'load',
-        //     timeout :0
-        // })
-        // console.log(allHomes)
-        await fs.writeFile('file.json', JSON.stringify(allHomes,null,2),'utf8', (e) => {
+
+      await fs.writeFile('file.json', JSON.stringify(allHomes,null,2),'utf8', (e) => {
             if (e) throw e;
-            else console.log('File Writen')
+            else {
+              console.log('File Writen')
+            }
           });
+      await browser.close()
     }catch(e){
         console.log('you got this error' + e)
  }
 }
 
 scraper()
+
+
